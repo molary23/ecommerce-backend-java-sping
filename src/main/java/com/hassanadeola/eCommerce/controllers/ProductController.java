@@ -32,12 +32,19 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public List<Product> getProducts(int skip, int limit) {
-        int page = 0, size = limit - skip;
-
-        Page<Product> pagination = productRepository.findAllByPage((Pageable) PageRequest.of(page, size, Sort.Direction.ASC, "name"));
+    public List<Product> getProducts(int page, int limit) {
+        PageRequest request = PageRequest.of(page, limit, Sort.by("name").descending());
+        Page<Product> pagination = productRepository.findAll(request);
         List<Product> products = pagination.getContent();
         return Collections.unmodifiableList(products);
+
     }
+
+    @GetMapping("/products/search")
+    public List<Product> searchProducts(String name, String description, int skip, int limit) {
+        return productRepository.findProductsByName(name, description, skip, limit);
+
+    }
+
 
 }
