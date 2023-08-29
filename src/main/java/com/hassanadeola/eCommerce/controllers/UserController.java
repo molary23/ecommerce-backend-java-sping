@@ -3,16 +3,13 @@ package com.hassanadeola.eCommerce.controllers;
 import com.hassanadeola.eCommerce.models.Address;
 import com.hassanadeola.eCommerce.models.Card;
 import com.hassanadeola.eCommerce.models.User;
-import com.hassanadeola.eCommerce.services.UserRepository;
+import com.hassanadeola.eCommerce.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.catalina.filters.ExpiresFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 

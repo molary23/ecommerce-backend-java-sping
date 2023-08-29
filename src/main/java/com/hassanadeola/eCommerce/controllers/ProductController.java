@@ -1,7 +1,7 @@
 package com.hassanadeola.eCommerce.controllers;
 
 import com.hassanadeola.eCommerce.models.Product;
-import com.hassanadeola.eCommerce.services.ProductRepository;
+import com.hassanadeola.eCommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.awt.print.Pageable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -39,12 +38,12 @@ public class ProductController {
         return Collections.unmodifiableList(products);
 
     }
-
+/*
     @GetMapping("/products/search")
     public List<Product> searchProducts(String name, String description, int skip, int limit) {
         return productRepository.findProductsByName(name, description, skip, limit);
 
-    }
+    }*/
 
 
 }

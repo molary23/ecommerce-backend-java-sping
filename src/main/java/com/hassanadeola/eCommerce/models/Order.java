@@ -13,9 +13,9 @@ public class Order {
     @Id
     public String id;
     @NonNull
-    private List<Product> products;
+    private List<String> productId;
     @NonNull
-    private User userId;
+    private String userId;
     @NonNull
     private boolean isBought = false;
 }
