@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -18,4 +20,13 @@ public class Product {
     private String description;
     @NonNull
     private Double price;
+    @NonNull
+    private String image;
+    @NonNull
+    private Double rating;
+    @NonNull
+    private LocalDateTime createdAt;
+    @NonNull
+    private LocalDateTime updatedAt;
+
 }

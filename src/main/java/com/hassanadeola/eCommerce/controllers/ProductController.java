@@ -2,6 +2,7 @@ package com.hassanadeola.eCommerce.controllers;
 
 import com.hassanadeola.eCommerce.models.Product;
 import com.hassanadeola.eCommerce.repository.ProductRepository;
+import com.hassanadeola.eCommerce.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,24 +19,21 @@ import java.util.Optional;
 public class ProductController {
 
     @Autowired
-    ProductRepository productRepository;
+    ProductService productService;
 
     @GetMapping("/product/{id}")
     public Optional<Product> getProductById(@PathVariable String id) {
-        return productRepository.findById(id);
+        return productService.getProductById(id);
     }
 
     @GetMapping("/product/{name}")
     public Optional<Product> getProductByName(@PathVariable String name) {
-        return productRepository.findById(name);
+        return productService.getProductByName(name);
     }
 
     @GetMapping("/products")
     public List<Product> getProducts(int page, int limit) {
-        PageRequest request = PageRequest.of(page, limit, Sort.by("name").descending());
-        Page<Product> pagination = productRepository.findAll(request);
-        List<Product> products = pagination.getContent();
-        return Collections.unmodifiableList(products);
+        return productService.getProducts(page, limit);
 
     }
 /*

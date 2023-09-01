@@ -4,12 +4,14 @@ import com.hassanadeola.eCommerce.models.Address;
 import com.hassanadeola.eCommerce.models.Card;
 import com.hassanadeola.eCommerce.models.User;
 import com.hassanadeola.eCommerce.repository.UserRepository;
+import com.hassanadeola.eCommerce.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,81 +20,68 @@ public class UserController {
 
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @PostMapping("/register")
     public String registerUsers(String username, String email, String password) {
-        userRepository.save(new User(username, email, passwordEncoder.encode(password)));
-        return "User registered successfully!";
+        String response = "";
+        if (username == null) {
+            response = "Username cannot be empty";
+        } else if (email == null) {
+            response = "Email cannot be empty";
+        } else if (password == null) {
+            response = "Password cannot be empty";
+        } else {
+            response = userService.saveUser(username, email, password);
+        }
+        return response;
     }
 
 
     @GetMapping("/users")
     public List<User> getUsers() {
-        return userRepository.findAll();
+        return userService.findUsers();
     }
 
     @PostMapping("/auth")
-    public User login(String username, String email, String password, HttpServletResponse response) {
-        User result = null;
-        User userByUsername;
-        userByUsername = userRepository.findByUsername(username);
-        if (userByUsername == null) {
-            User userByEmail = userRepository.findByEmail(email);
-            if (userByEmail != null) {
-                boolean isMatch = passwordEncoder.matches(password, userByEmail.getPassword());
-                if (isMatch) {
-                    result = userByEmail;
-                }
-            }
+    public Object login(String username, String email, String password, HttpServletResponse httpServletResponse) {
+        Object response = "";
+        if (username == null && email == null) {
+            response = "Username and Email cannot be empty";
+        } else if (password == null) {
+            response = "Password cannot be empty";
         } else {
-            boolean isMatch = passwordEncoder.matches(password, userByUsername.getPassword());
-            if (isMatch) {
-                result = userByUsername;
-            }
+            response = userService.login(username, email, password, httpServletResponse);
         }
-        if (result == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-        return result;
+        return response;
+
     }
 
     @PutMapping("/address")
-    public User saveAddress(String id, Address address, HttpServletResponse response) {
-        Optional<User> user;
-        User newUser = null;
-
-        user = userRepository.findById(id);
-        if (user.isPresent()) {
-            user.get().setAddress(address);
-            newUser = userRepository.save(user.get());
-
+    public Object saveAddress(String id, Address address, HttpServletResponse httpServletResponse) {
+        Object response = "";
+        if (id == null) {
+            response = "User Id cannot be empty";
+        } else if (address == null) {
+            response = "Address cannot be empty";
+        } else {
+            response = userService.saveAddress(id, address, httpServletResponse);
         }
-        if (newUser == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
-        return newUser;
+        return response;
     }
 
     @PutMapping("/card")
-    public User saveCard(String id, Card card, HttpServletResponse response) {
-        Optional<User> user;
-        User newUser = null;
-
-        user = userRepository.findById(id);
-        if (user.isPresent()) {
-            user.get().setCard(card);
-            newUser = userRepository.save(user.get());
-
+    public Object saveCard(String id, Card card, HttpServletResponse httpServletResponse) {
+        Object response = "";
+        if (id == null) {
+            response = "User Id cannot be empty";
+        } else if (card == null) {
+            response = "Card cannot be empty";
+        } else {
+            response = userService.saveCard(id, card, httpServletResponse);
         }
-        if (newUser == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
-        return newUser;
+        return response;
+
     }
 
 }

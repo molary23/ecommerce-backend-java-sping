@@ -3,6 +3,8 @@ package com.hassanadeola.eCommerce.models;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -17,5 +19,9 @@ public class Payment {
     private Double amount;
     @NonNull
     private boolean status;
+    @NonNull
+    private LocalDateTime createdAt = LocalDateTime.now();
+    @NonNull
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
 }
