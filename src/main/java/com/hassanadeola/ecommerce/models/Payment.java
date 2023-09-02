@@ -1,4 +1,4 @@
-package com.hassanadeola.eCommerce.models;
+package com.hassanadeola.ecommerce.models;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;

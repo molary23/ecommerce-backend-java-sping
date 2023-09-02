@@ -1,10 +1,10 @@
-package com.hassanadeola.eCommerce.services;
+package com.hassanadeola.ecommerce.services;
 
-import com.hassanadeola.eCommerce.models.Order;
-import com.hassanadeola.eCommerce.models.Payment;
-import com.hassanadeola.eCommerce.repository.OrderRepository;
-import com.hassanadeola.eCommerce.repository.PaymentRepository;
-import com.hassanadeola.eCommerce.repository.ProductRepository;
+import com.hassanadeola.ecommerce.models.Order;
+import com.hassanadeola.ecommerce.models.Payment;
+import com.hassanadeola.ecommerce.repository.OrderRepository;
+import com.hassanadeola.ecommerce.repository.PaymentRepository;
+import com.hassanadeola.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,16 +1,13 @@
-package com.hassanadeola.eCommerce.services;
+package com.hassanadeola.ecommerce.services;
 
-import com.hassanadeola.eCommerce.models.Address;
-import com.hassanadeola.eCommerce.models.Card;
-import com.hassanadeola.eCommerce.models.User;
-import com.hassanadeola.eCommerce.repository.UserRepository;
+import com.hassanadeola.ecommerce.models.Address;
+import com.hassanadeola.ecommerce.models.Card;
+import com.hassanadeola.ecommerce.models.User;
+import com.hassanadeola.ecommerce.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.time.LocalDateTime;
 import java.util.List;

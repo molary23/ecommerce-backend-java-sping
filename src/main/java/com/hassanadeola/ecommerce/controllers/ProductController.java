@@ -1,17 +1,12 @@
-package com.hassanadeola.eCommerce.controllers;
+package com.hassanadeola.ecommerce.controllers;
 
-import com.hassanadeola.eCommerce.models.Product;
-import com.hassanadeola.eCommerce.repository.ProductRepository;
-import com.hassanadeola.eCommerce.services.ProductService;
+import com.hassanadeola.ecommerce.models.Product;
+import com.hassanadeola.ecommerce.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

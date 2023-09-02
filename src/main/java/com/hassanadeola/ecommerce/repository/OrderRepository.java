@@ -1,6 +1,6 @@
-package com.hassanadeola.eCommerce.repository;
+package com.hassanadeola.ecommerce.repository;
 
-import com.hassanadeola.eCommerce.models.Order;
+import com.hassanadeola.ecommerce.models.Order;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface OrderRepository extends MongoRepository<Order, String> {

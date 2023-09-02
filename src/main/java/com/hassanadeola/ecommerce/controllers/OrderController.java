@@ -1,9 +1,9 @@
-package com.hassanadeola.eCommerce.controllers;
+package com.hassanadeola.ecommerce.controllers;
 
-import com.hassanadeola.eCommerce.models.Order;
-import com.hassanadeola.eCommerce.repository.OrderRepository;
-import com.hassanadeola.eCommerce.repository.ProductRepository;
-import com.hassanadeola.eCommerce.services.OrderService;
+import com.hassanadeola.ecommerce.models.Order;
+import com.hassanadeola.ecommerce.repository.OrderRepository;
+import com.hassanadeola.ecommerce.repository.ProductRepository;
+import com.hassanadeola.ecommerce.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +24,12 @@ public class OrderController {
 
 
     @PostMapping("/orders/add")
-    public List<String> addOrder(String productId, String userId) {
-        List<String> response = new ArrayList<>();
+    public String addOrder(String productId, String userId) {
+        String response = "";
         if (userId == null) {
-            response.add("User Id cannot be empty");
+            response = "User Id cannot be empty";
         } else if (productId == null) {
-            response.add(EMPTY_PRODUCT_ID_MESSAGE);
+            response = EMPTY_PRODUCT_ID_MESSAGE;
         } else {
             response = orderService.addOrder(productId, userId);
         }
@@ -38,7 +38,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/remove")
-    public String removeProductFromOrder(String productId, String orderId) {
+    public Object removeProductFromOrder(String productId, String orderId) {
         String response = "";
         if (orderId == null) {
             response = EMPTY_ORDER_ID_MESSAGE;
@@ -49,6 +49,7 @@ public class OrderController {
             response = "Product removed from Cart successfully";
         }
         return response;
+
     }
 
     @GetMapping("/orders/all")

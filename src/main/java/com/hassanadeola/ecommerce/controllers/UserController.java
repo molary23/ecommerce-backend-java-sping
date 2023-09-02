@@ -1,19 +1,15 @@
-package com.hassanadeola.eCommerce.controllers;
+package com.hassanadeola.ecommerce.controllers;
 
-import com.hassanadeola.eCommerce.models.Address;
-import com.hassanadeola.eCommerce.models.Card;
-import com.hassanadeola.eCommerce.models.User;
-import com.hassanadeola.eCommerce.repository.UserRepository;
-import com.hassanadeola.eCommerce.services.UserService;
+import com.hassanadeola.ecommerce.models.Address;
+import com.hassanadeola.ecommerce.models.Card;
+import com.hassanadeola.ecommerce.models.User;
+import com.hassanadeola.ecommerce.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController {
