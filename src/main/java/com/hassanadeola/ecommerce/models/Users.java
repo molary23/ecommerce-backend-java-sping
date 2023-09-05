@@ -9,29 +9,32 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @NoArgsConstructor
 @Document("customers")
-public class User {
+public class Users {
     @Id
+    @Generated
     public String id;
-    @NonNull
     private String username;
-    @NonNull
     private String email;
-    @NonNull
     private String password;
     private Address address;
     private Card card;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public User(String username, String email, String password, LocalDateTime createdAt) {
+    public Users(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.createdAt = createdAt;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-
+    public Users(String username, String email, String password, LocalDateTime updatedAt) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.updatedAt = updatedAt;
+    }
 }

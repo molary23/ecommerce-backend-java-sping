@@ -27,7 +27,7 @@ public class OrderController {
     public String addOrder(String productId, String userId) {
         String response = "";
         if (userId == null) {
-            response = "User Id cannot be empty";
+            response = "Users Id cannot be empty";
         } else if (productId == null) {
             response = EMPTY_PRODUCT_ID_MESSAGE;
         } else {
@@ -79,6 +79,15 @@ public class OrderController {
         } else {
             orderService.removeAll(orderId);
             response = "All cart items removed from Cart successfully";
+        }
+        return response;
+    }
+
+    @GetMapping("/orders/product/quantity")
+    public int getProductQtyFromOrder(String orderId, String productId) {
+        int response = 0;
+        if (orderId != null && productId != null) {
+            response = orderService.getProductQtyFromOrder(orderId, productId);
         }
         return response;
     }

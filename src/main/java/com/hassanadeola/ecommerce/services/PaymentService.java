@@ -4,7 +4,6 @@ import com.hassanadeola.ecommerce.models.Order;
 import com.hassanadeola.ecommerce.models.Payment;
 import com.hassanadeola.ecommerce.repository.OrderRepository;
 import com.hassanadeola.ecommerce.repository.PaymentRepository;
-import com.hassanadeola.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +15,18 @@ public class PaymentService {
     @Autowired
     OrderRepository orderRepository;
     @Autowired
-    ProductRepository productRepository;
-    @Autowired
     PaymentRepository paymentRepository;
 
 
-    public String savePayment(String orderId, double total) {
+    public boolean savePayment(String orderId, double amount, String userId, String lastFour) {
         Optional<Order> order = orderRepository.findById(orderId);
-        order.ifPresent(value -> value.setBought(true));
-        paymentRepository.save(new Payment(orderId, total, true));
-        return "Payment Successful!";
+        boolean isSaved = false;
+        if (order.isPresent()) {
+            order.get().setBought(true);
+            orderRepository.save(order.get());
+            paymentRepository.save(new Payment(orderId, amount, userId, lastFour, true));
+            isSaved = true;
+        }
+        return isSaved;
     }
 }

@@ -2,7 +2,7 @@ package com.hassanadeola.ecommerce.controllers;
 
 import com.hassanadeola.ecommerce.models.Address;
 import com.hassanadeola.ecommerce.models.Card;
-import com.hassanadeola.ecommerce.models.User;
+import com.hassanadeola.ecommerce.models.Users;
 import com.hassanadeola.ecommerce.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,19 +35,19 @@ public class UserController {
 
 
     @GetMapping("/users")
-    public List<User> getUsers() {
+    public List<Users> getUsers() {
         return userService.findUsers();
     }
 
     @PostMapping("/auth")
-    public Object login(String username, String email, String password, HttpServletResponse httpServletResponse) {
+    public Object login(String username, String password, HttpServletResponse httpServletResponse) {
         Object response = "";
-        if (username == null && email == null) {
+        if (username == null) {
             response = "Username and Email cannot be empty";
         } else if (password == null) {
             response = "Password cannot be empty";
         } else {
-            response = userService.login(username, email, password, httpServletResponse);
+            response = userService.login(username, password, httpServletResponse);
         }
         return response;
 
@@ -57,7 +57,7 @@ public class UserController {
     public Object saveAddress(String id, Address address, HttpServletResponse httpServletResponse) {
         Object response = "";
         if (id == null) {
-            response = "User Id cannot be empty";
+            response = "Users Id cannot be empty";
         } else if (address == null) {
             response = "Address cannot be empty";
         } else {
@@ -70,7 +70,7 @@ public class UserController {
     public Object saveCard(String id, Card card, HttpServletResponse httpServletResponse) {
         Object response = "";
         if (id == null) {
-            response = "User Id cannot be empty";
+            response = "Users Id cannot be empty";
         } else if (card == null) {
             response = "Card cannot be empty";
         } else {

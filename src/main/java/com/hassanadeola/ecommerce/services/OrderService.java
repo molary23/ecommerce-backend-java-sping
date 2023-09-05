@@ -39,8 +39,6 @@ public class OrderService {
             cartItems = Collections.singletonList(new CartItem(productId, 1));
             order = new Order(cartItems, userId);
             response = PRODUCT_ADDED;
-            orderRepository.save(order);
-            return response;
         }
         if (!order.isBought()) {
             cartItems = order.getCartItems();
@@ -61,7 +59,6 @@ public class OrderService {
         }
         orderRepository.save(order);
         return response;
-
     }
 
 
@@ -134,5 +131,28 @@ public class OrderService {
 
     public void removeAll(String orderId) {
         orderRepository.deleteById(orderId);
+    }
+
+    public int getProductQtyFromOrder(String orderId, String productId) {
+        Optional<Order> order = orderRepository.findById(orderId);
+        List<CartItem> cartItems = null;
+        int qty = 0;
+        boolean isFound;
+        if (order.isPresent()) {
+            cartItems = order.get().getCartItems();
+        }
+        if (cartItems != null) {
+            isFound = cartItems.stream().anyMatch(cartItem -> cartItem.getProductId().equalsIgnoreCase(productId));
+            if (isFound) {
+                for (CartItem cartItem : cartItems) {
+                    String id = cartItem.getProductId();
+                    if (id.equalsIgnoreCase(productId)) {
+                        qty = cartItem.getQuantity();
+                    }
+                }
+            }
+
+        }
+        return qty;
     }
 }

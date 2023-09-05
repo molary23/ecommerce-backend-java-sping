@@ -7,21 +7,30 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @NoArgsConstructor
 public class Payment {
 
     @Id
     public String id;
-    @NonNull
-    private String orderId;
-    @NonNull
-    private Double amount;
-    @NonNull
-    private boolean status;
-    @NonNull
-    private LocalDateTime createdAt = LocalDateTime.now();
-    @NonNull
-    private LocalDateTime updatedAt = LocalDateTime.now();
 
+    private String orderId;
+
+    private Double amount;
+
+    private String userId;
+
+    private String lastFour;
+
+    private boolean status;
+
+    private LocalDateTime createdAt;
+
+    public Payment(String orderId, Double amount, String userId, String lastFour, boolean status) {
+        this.orderId = orderId;
+        this.amount = amount;
+        this.userId = userId;
+        this.lastFour = lastFour;
+        this.status = status;
+        this.createdAt = LocalDateTime.now();
+    }
 }
