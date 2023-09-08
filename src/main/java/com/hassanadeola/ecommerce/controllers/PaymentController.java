@@ -13,8 +13,8 @@ public class PaymentController {
 
 
     @PostMapping("/pay")
-    public boolean makePayment(String userId, String orderId, double amount, String lastFour) {
-        return paymentService.savePayment(orderId, amount, userId, lastFour);
+    public boolean makePayment(String userId, double amount, String lastFour) {
+        return paymentService.savePayment(amount, userId, lastFour);
     }
 
     @GetMapping("payment")

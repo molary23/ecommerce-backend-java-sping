@@ -1,6 +1,7 @@
 package com.hassanadeola.ecommerce.controllers;
 
 import com.hassanadeola.ecommerce.models.Order;
+import com.hassanadeola.ecommerce.models.Product;
 import com.hassanadeola.ecommerce.repository.OrderRepository;
 import com.hassanadeola.ecommerce.repository.ProductRepository;
 import com.hassanadeola.ecommerce.services.OrderService;
@@ -38,14 +39,14 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/remove")
-    public Object removeProductFromOrder(String productId, String orderId) {
+    public Object removeProductFromOrder(String productId, String userId) {
         String response = "";
-        if (orderId == null) {
+        if (userId == null) {
             response = EMPTY_ORDER_ID_MESSAGE;
         } else if (productId == null) {
             response = EMPTY_PRODUCT_ID_MESSAGE;
         } else {
-            orderService.removeProduct(productId, orderId);
+            orderService.removeProduct(productId, userId);
             response = "Product removed from Cart successfully";
         }
         return response;
@@ -66,18 +67,27 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/orders/user/products")
+    public Object getUserCurrentOrderProducts(String userId) {
+        if (userId == null) {
+            return "User Id is required";
+        } else {
+            return orderService.getUserCurrentOrderProducts(userId);
+        }
+    }
+
     @GetMapping("/orders/total")
-    public Double getTotal(String orderId) {
-        return orderService.getTotal(orderId);
+    public Double getTotal(String userId) {
+        return orderService.getTotal(userId);
     }
 
     @DeleteMapping("orders/delete")
-    public String deleteAllOrder(String orderId) {
+    public String deleteAllOrder(String userId) {
         String response = "";
-        if (orderId == null) {
+        if (userId == null) {
             response = EMPTY_ORDER_ID_MESSAGE;
         } else {
-            orderService.removeAll(orderId);
+            orderService.removeAll(userId);
             response = "All cart items removed from Cart successfully";
         }
         return response;
@@ -90,5 +100,14 @@ public class OrderController {
             response = orderService.getProductQtyFromOrder(orderId, productId);
         }
         return response;
+    }
+
+    @GetMapping("/products/product")
+    public List<Product> searchForProduct(String search) {
+        List<Product> products = new ArrayList<Product>();
+        if (search != null) {
+            products = orderService.searchProducts(search);
+        }
+        return products;
     }
 }

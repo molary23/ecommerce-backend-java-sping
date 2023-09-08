@@ -8,8 +8,6 @@ import org.springframework.data.annotation.Id;
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class Card {
-    @Id
-    public String id;
     @NonNull
     private String number;
     @NonNull
@@ -17,5 +15,5 @@ public class Card {
     @NonNull
     private String year;
     @NonNull
-    private int cvv;
+    private String cvv;
 }

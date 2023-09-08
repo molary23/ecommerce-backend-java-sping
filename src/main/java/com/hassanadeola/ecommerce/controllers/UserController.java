@@ -40,44 +40,50 @@ public class UserController {
     }
 
     @PostMapping("/auth")
-    public Object login(String username, String password, HttpServletResponse httpServletResponse) {
+    public Object login(String username, String password) {
         Object response = "";
         if (username == null) {
             response = "Username and Email cannot be empty";
         } else if (password == null) {
             response = "Password cannot be empty";
         } else {
-            response = userService.login(username, password, httpServletResponse);
+            response = userService.login(username, password);
         }
         return response;
 
     }
 
     @PutMapping("/address")
-    public Object saveAddress(String id, Address address, HttpServletResponse httpServletResponse) {
+    public Object saveAddress(String id, Address address) {
         Object response = "";
         if (id == null) {
             response = "Users Id cannot be empty";
         } else if (address == null) {
             response = "Address cannot be empty";
         } else {
-            response = userService.saveAddress(id, address, httpServletResponse);
+            response = userService.saveAddress(id, address);
         }
         return response;
     }
 
     @PutMapping("/card")
-    public Object saveCard(String id, Card card, HttpServletResponse httpServletResponse) {
+    public Object saveCard(String userId, Card card) {
         Object response = "";
-        if (id == null) {
+        if (userId == null) {
             response = "Users Id cannot be empty";
         } else if (card == null) {
             response = "Card cannot be empty";
         } else {
-            response = userService.saveCard(id, card, httpServletResponse);
+            response = userService.saveCard(userId, card);
         }
         return response;
 
     }
+
+    @GetMapping("/user/card")
+    public Card getUserCard(String userId) {
+        return userService.getUserCard(userId);
+    }
+
 
 }

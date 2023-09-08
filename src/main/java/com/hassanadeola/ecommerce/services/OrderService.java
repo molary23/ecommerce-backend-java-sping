@@ -1,13 +1,19 @@
 package com.hassanadeola.ecommerce.services;
 
-import com.hassanadeola.ecommerce.models.CartItem;
-import com.hassanadeola.ecommerce.models.Order;
-import com.hassanadeola.ecommerce.models.Product;
-import com.hassanadeola.ecommerce.models.ProductInCart;
+import com.hassanadeola.ecommerce.models.*;
 import com.hassanadeola.ecommerce.repository.OrderRepository;
 import com.hassanadeola.ecommerce.repository.ProductRepository;
+import com.hassanadeola.ecommerce.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.TextIndexDefinition;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.TextCriteria;
+import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -29,18 +36,32 @@ public class OrderService {
     @Autowired
     HttpServletResponse httpServletResponse;
 
+    @Autowired
+    private MongoOperations mongoOperations;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    public static final String COLLECTION_NAME = "order";
+
+    public Order findOneByUserIdOrderByCreatedAtDesc(String userId) {
+        return mongoOperations.findOne(
+                Query.query(Criteria.where("userId").is(userId)).with(Sort.by(Sort.Direction.DESC, "createdAt")),
+                Order.class,
+                COLLECTION_NAME);
+    }
+
     public String addOrder(String productId, String userId) {
         Order order;
 
-        order = orderRepository.findByUserId(userId);
+        order = findOneByUserIdOrderByCreatedAtDesc(userId);
         List<CartItem> cartItems;
         String response = "";
-        if (order == null) {
+        if (order == null || order.isBought()) {
             cartItems = Collections.singletonList(new CartItem(productId, 1));
             order = new Order(cartItems, userId);
             response = PRODUCT_ADDED;
-        }
-        if (!order.isBought()) {
+        } else if (!order.isBought()) {
             cartItems = order.getCartItems();
             boolean isFound = cartItems.stream().anyMatch(cartItem -> cartItem.getProductId().equalsIgnoreCase(productId));
             if (isFound) {
@@ -74,10 +95,12 @@ public class OrderService {
             List<CartItem> cartItems = order.get().getCartItems();
             for (CartItem cartItem : cartItems) {
                 String productId = cartItem.getProductId();
+
                 int quantity = cartItem.getQuantity();
+                int id = cartItems.indexOf(cartItem) + 1;
                 if (productId != null) {
                     Optional<Product> product = productRepository.findById(productId);
-                    product.ifPresent(value -> productsInCart.add(new ProductInCart(value, quantity)));
+                    product.ifPresent(value -> productsInCart.add(new ProductInCart(id, value, quantity)));
                 }
 
             }
@@ -85,11 +108,32 @@ public class OrderService {
         return productsInCart;
     }
 
-    public Double getTotal(String orderId) {
-        Optional<Order> order = orderRepository.findById(orderId);
+    public Object getUserCurrentOrderProducts(String userId) {
+        Order order = findOneByUserIdOrderByCreatedAtDesc(userId);
+        List<ProductInCart> productsInCart = new ArrayList<>();
+        if (order != null) {
+            if (!order.isBought()) {
+                List<CartItem> cartItems = order.getCartItems();
+                for (CartItem cartItem : cartItems) {
+                    String productId = cartItem.getProductId();
+                    int id = cartItems.indexOf(cartItem) + 1;
+                    int quantity = cartItem.getQuantity();
+                    if (productId != null) {
+                        Optional<Product> product = productRepository.findById(productId);
+                        product.ifPresent(value -> productsInCart.add(new ProductInCart(id, value, quantity)));
+                    }
+
+                }
+            }
+        }
+        return productsInCart;
+    }
+
+    public Double getTotal(String userId) {
+        Order order = findOneByUserIdOrderByCreatedAtDesc(userId);
         double total = 0.0;
-        if (order.isPresent()) {
-            List<CartItem> cartItems = order.get().getCartItems();
+        if (!order.isBought()) {
+            List<CartItem> cartItems = order.getCartItems();
             for (CartItem cartItem : cartItems) {
                 String productId = cartItem.getProductId();
                 int quantity = cartItem.getQuantity();
@@ -102,12 +146,12 @@ public class OrderService {
         return total;
     }
 
-    public void removeProduct(String productId, String orderId) {
-        Optional<Order> order = orderRepository.findById(orderId);
+    public void removeProduct(String productId, String userId) {
+        Order order = findOneByUserIdOrderByCreatedAtDesc(userId);
         List<CartItem> cartItems = null;
         boolean isFound;
-        if (order.isPresent()) {
-            cartItems = order.get().getCartItems();
+        if (order != null) {
+            cartItems = order.getCartItems();
         }
         if (cartItems != null) {
             isFound = cartItems.stream().anyMatch(cartItem -> cartItem.getProductId().equalsIgnoreCase(productId));
@@ -119,8 +163,8 @@ public class OrderService {
                     }
                 }
                 cartItems = cartItems.stream().filter(cartItem -> cartItem.getQuantity() >= 1).toList();
-                order.get().setCartItems(cartItems);
-                orderRepository.save(order.get());
+                order.setCartItems(cartItems);
+                orderRepository.save(order);
             } else {
                 httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -129,8 +173,12 @@ public class OrderService {
         }
     }
 
-    public void removeAll(String orderId) {
-        orderRepository.deleteById(orderId);
+    public void removeAll(String userId) {
+        Order order = findOneByUserIdOrderByCreatedAtDesc(userId);
+        if (!order.isBought()) {
+            String orderId = order.getId();
+            orderRepository.deleteById(orderId);
+        }
     }
 
     public int getProductQtyFromOrder(String orderId, String productId) {
@@ -154,5 +202,18 @@ public class OrderService {
 
         }
         return qty;
+    }
+
+    public List<Product> searchProducts(String searchTerm) {
+       /* TextIndexDefinition textIndex = new TextIndexDefinition.TextIndexDefinitionBuilder()
+                .onField("name")
+                .onField("description")
+                .build();
+        mongoTemplate.indexOps(Product.class).ensureIndex(textIndex);*/
+
+        Pattern pattern = Pattern.compile(".*" + searchTerm + ".*");
+        Criteria regex = Criteria.where("name").regex(String.valueOf(pattern), "i");
+        return mongoOperations.find(new Query().addCriteria(regex).limit(5), Product.class);
+
     }
 }

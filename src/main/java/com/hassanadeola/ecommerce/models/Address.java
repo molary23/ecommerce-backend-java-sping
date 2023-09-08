@@ -8,8 +8,6 @@ import org.springframework.data.annotation.Id;
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class Address {
-    @Id
-    public String id;
     private int number;
     @NonNull
     private String street;

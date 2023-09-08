@@ -17,13 +17,17 @@ public class PaymentService {
     @Autowired
     PaymentRepository paymentRepository;
 
+    @Autowired
+    OrderService orderService;
 
-    public boolean savePayment(String orderId, double amount, String userId, String lastFour) {
-        Optional<Order> order = orderRepository.findById(orderId);
+
+    public boolean savePayment(double amount, String userId, String lastFour) {
+        Order order = orderService.findOneByUserIdOrderByCreatedAtDesc(userId);
         boolean isSaved = false;
-        if (order.isPresent()) {
-            order.get().setBought(true);
-            orderRepository.save(order.get());
+        if (order != null) {
+            order.setBought(true);
+            orderRepository.save(order);
+            String orderId = order.getId();
             paymentRepository.save(new Payment(orderId, amount, userId, lastFour, true));
             isSaved = true;
         }

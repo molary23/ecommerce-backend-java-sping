@@ -1,5 +1,6 @@
 package com.hassanadeola.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,10 +18,15 @@ public class Users {
     public String id;
     private String username;
     private String email;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private Address address;
+    @JsonIgnore
     private Card card;
+    @JsonIgnore
     private LocalDateTime createdAt;
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     public Users(String username, String email, String password) {
@@ -37,4 +43,6 @@ public class Users {
         this.password = password;
         this.updatedAt = updatedAt;
     }
+
+
 }

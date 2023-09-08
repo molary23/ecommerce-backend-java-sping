@@ -22,6 +22,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    HttpServletResponse httpServletResponse;
+
 
     public String saveUser(String username, String email, String password) {
         userRepository.save(new Users(username, email, passwordEncoder.encode(password)));
@@ -34,7 +37,7 @@ public class UserService {
     }
 
 
-    public Users login(String username, String password, HttpServletResponse httpServletResponse) {
+    public Users login(String username, String password) {
         Users result = null;
         Users usersByUsername;
         usersByUsername = userRepository.findByUsername(username);
@@ -59,7 +62,7 @@ public class UserService {
     }
 
 
-    public Users saveAddress(String id, Address address, HttpServletResponse response) {
+    public Users saveAddress(String id, Address address) {
         Optional<Users> user;
         Users newUsers = null;
 
@@ -71,14 +74,14 @@ public class UserService {
 
         }
         if (newUsers == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
         return newUsers;
     }
 
 
-    public Users saveCard(String id, Card card, HttpServletResponse response) {
+    public boolean saveCard(String id, Card card) {
         Optional<Users> user;
         Users newUsers = null;
 
@@ -90,10 +93,22 @@ public class UserService {
 
         }
         if (newUsers == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return false;
         }
-        return newUsers;
+        return true;
     }
 
+    public Card getUserCard(String userId) {
+        Optional<Users> user = userRepository.findById(userId);
+        Card card = null;
+        if (user.isPresent()) {
+            card = user.get().getCard();
+        }
+        if (card == null) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+        return card;
+
+    }
 }
