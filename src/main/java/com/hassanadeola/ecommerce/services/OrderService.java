@@ -3,17 +3,16 @@ package com.hassanadeola.ecommerce.services;
 import com.hassanadeola.ecommerce.models.*;
 import com.hassanadeola.ecommerce.repository.OrderRepository;
 import com.hassanadeola.ecommerce.repository.ProductRepository;
-import com.hassanadeola.ecommerce.repository.UserRepository;
+
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.index.TextIndexDefinition;
+
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.TextCriteria;
-import org.springframework.data.mongodb.core.query.TextQuery;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -57,11 +56,12 @@ public class OrderService {
         order = findOneByUserIdOrderByCreatedAtDesc(userId);
         List<CartItem> cartItems;
         String response = "";
+
         if (order == null || order.isBought()) {
             cartItems = Collections.singletonList(new CartItem(productId, 1));
             order = new Order(cartItems, userId);
             response = PRODUCT_ADDED;
-        } else if (!order.isBought()) {
+        } else {
             cartItems = order.getCartItems();
             boolean isFound = cartItems.stream().anyMatch(cartItem -> cartItem.getProductId().equalsIgnoreCase(productId));
             if (isFound) {
@@ -220,7 +220,7 @@ public class OrderService {
     public void removeAProductFromOrder(String productId, String userId) {
         Order order = findOneByUserIdOrderByCreatedAtDesc(userId);
         List<CartItem> cartItems = null;
-        boolean isFound;
+
         if (order != null) {
             cartItems = order.getCartItems();
         }

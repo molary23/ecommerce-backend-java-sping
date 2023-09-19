@@ -12,10 +12,6 @@ import java.util.*;
 
 @RestController
 public class OrderController {
-    @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    ProductRepository productRepository;
 
     @Autowired
     public OrderService orderService;
@@ -105,7 +101,7 @@ public class OrderController {
 
     @GetMapping("/products/product")
     public List<Product> searchForProduct(String search) {
-        List<Product> products = new ArrayList<Product>();
+        List<Product> products = new ArrayList<>();
         if (search != null) {
             products = orderService.searchProducts(search);
         }
