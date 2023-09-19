@@ -216,4 +216,20 @@ public class OrderService {
         return mongoOperations.find(new Query().addCriteria(regex).limit(5), Product.class);
 
     }
+
+    public void removeAProductFromOrder(String productId, String userId) {
+        Order order = findOneByUserIdOrderByCreatedAtDesc(userId);
+        List<CartItem> cartItems = null;
+        boolean isFound;
+        if (order != null) {
+            cartItems = order.getCartItems();
+        }
+        if (cartItems != null) {
+            cartItems = cartItems.stream().filter(cartItem -> !cartItem.getProductId().equalsIgnoreCase(productId)).toList();
+            order.setCartItems(cartItems);
+            orderRepository.save(order);
+        } else {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
 }

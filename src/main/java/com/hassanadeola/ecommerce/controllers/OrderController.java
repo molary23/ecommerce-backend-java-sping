@@ -21,7 +21,8 @@ public class OrderController {
     public OrderService orderService;
 
     private static final String EMPTY_ORDER_ID_MESSAGE = "Order Id cannot be empty",
-            EMPTY_PRODUCT_ID_MESSAGE = "Product Id cannot be empty";
+            EMPTY_PRODUCT_ID_MESSAGE = "Product Id cannot be empty",
+            EMPTY_USER_ID_MESSAGE = "User Id cannot be empty";
 
 
     @PostMapping("/orders/add")
@@ -109,5 +110,19 @@ public class OrderController {
             products = orderService.searchProducts(search);
         }
         return products;
+    }
+
+    @DeleteMapping("orders/delete/product")
+    public String removeAProduct(String productId, String userId) {
+        String response = "";
+        if (userId == null) {
+            response = EMPTY_USER_ID_MESSAGE;
+        } else if (productId == null) {
+            response = EMPTY_PRODUCT_ID_MESSAGE;
+        } else {
+            orderService.removeAProductFromOrder(productId, userId);
+            response = "Product removed from order";
+        }
+        return response;
     }
 }
