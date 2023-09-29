@@ -19,8 +19,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public String registerUsers(String username, String email, String password) {
-        String response = "";
+    public Object registerUsers(String username, String email, String password) {
+        Object response = "";
         if (username == null) {
             response = "Username cannot be empty";
         } else if (email == null) {

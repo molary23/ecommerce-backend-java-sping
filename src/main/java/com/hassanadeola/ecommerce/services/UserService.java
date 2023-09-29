@@ -26,9 +26,9 @@ public class UserService {
     HttpServletResponse httpServletResponse;
 
 
-    public String saveUser(String username, String email, String password) {
-        userRepository.save(new Users(username, email, passwordEncoder.encode(password)));
-        return "Users registered successfully!";
+    public Users saveUser(String username, String email, String password) {
+        return userRepository.save(new Users(username, email, passwordEncoder.encode(password)));
+
     }
 
 

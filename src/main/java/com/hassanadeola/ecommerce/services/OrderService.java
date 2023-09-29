@@ -146,7 +146,7 @@ public class OrderService {
         return total;
     }
 
-    public void removeProduct(String productId, String userId) {
+    public void reduceProductQty(String productId, String userId) {
         Order order = findOneByUserIdOrderByCreatedAtDesc(userId);
         List<CartItem> cartItems = null;
         boolean isFound;

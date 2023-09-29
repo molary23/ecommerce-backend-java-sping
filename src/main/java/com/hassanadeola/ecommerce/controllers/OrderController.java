@@ -25,7 +25,7 @@ public class OrderController {
     public String addOrder(String productId, String userId) {
         String response = "";
         if (userId == null) {
-            response = "Users Id cannot be empty";
+            response = EMPTY_USER_ID_MESSAGE;
         } else if (productId == null) {
             response = EMPTY_PRODUCT_ID_MESSAGE;
         } else {
@@ -36,14 +36,14 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/remove")
-    public Object removeProductFromOrder(String productId, String userId) {
+    public Object reduceProductQty(String productId, String userId) {
         String response = "";
         if (userId == null) {
             response = EMPTY_ORDER_ID_MESSAGE;
         } else if (productId == null) {
             response = EMPTY_PRODUCT_ID_MESSAGE;
         } else {
-            orderService.removeProduct(productId, userId);
+            orderService.reduceProductQty(productId, userId);
             response = "Product removed from Cart successfully";
         }
         return response;
