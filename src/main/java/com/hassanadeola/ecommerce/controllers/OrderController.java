@@ -1,9 +1,6 @@
 package com.hassanadeola.ecommerce.controllers;
 
 import com.hassanadeola.ecommerce.models.Order;
-import com.hassanadeola.ecommerce.models.Product;
-import com.hassanadeola.ecommerce.repository.OrderRepository;
-import com.hassanadeola.ecommerce.repository.ProductRepository;
 import com.hassanadeola.ecommerce.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -99,14 +96,6 @@ public class OrderController {
         return response;
     }
 
-    @GetMapping("/products/product")
-    public List<Product> searchForProduct(String search) {
-        List<Product> products = new ArrayList<>();
-        if (search != null) {
-            products = orderService.searchProducts(search);
-        }
-        return products;
-    }
 
     @DeleteMapping("orders/delete/product")
     public String removeAProduct(String productId, String userId) {
@@ -117,7 +106,7 @@ public class OrderController {
             response = EMPTY_PRODUCT_ID_MESSAGE;
         } else {
             orderService.removeAProductFromOrder(productId, userId);
-            response = "Product removed from order";
+            response = "Product removed from cart";
         }
         return response;
     }

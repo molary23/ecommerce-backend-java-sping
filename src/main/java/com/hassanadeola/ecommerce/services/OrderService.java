@@ -20,28 +20,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 
 @Service
 public class OrderService {
+    public static final String COLLECTION_NAME = "order";
     private static final String PRODUCT_ADDED = "Product added to cart successfully";
-
     @Autowired
     OrderRepository orderRepository;
-
     @Autowired
     ProductRepository productRepository;
     @Autowired
     HttpServletResponse httpServletResponse;
-
     @Autowired
     private MongoOperations mongoOperations;
-
     @Autowired
     private MongoTemplate mongoTemplate;
-
-    public static final String COLLECTION_NAME = "order";
 
     public Order findOneByUserIdOrderByCreatedAtDesc(String userId) {
         return mongoOperations.findOne(
@@ -111,19 +105,17 @@ public class OrderService {
     public Object getUserCurrentOrderProducts(String userId) {
         Order order = findOneByUserIdOrderByCreatedAtDesc(userId);
         List<ProductInCart> productsInCart = new ArrayList<>();
-        if (order != null) {
-            if (!order.isBought()) {
-                List<CartItem> cartItems = order.getCartItems();
-                for (CartItem cartItem : cartItems) {
-                    String productId = cartItem.getProductId();
-                    int id = cartItems.indexOf(cartItem) + 1;
-                    int quantity = cartItem.getQuantity();
-                    if (productId != null) {
-                        Optional<Product> product = productRepository.findById(productId);
-                        product.ifPresent(value -> productsInCart.add(new ProductInCart(id, value, quantity)));
-                    }
-
+        if (order != null && !order.isBought()) {
+            List<CartItem> cartItems = order.getCartItems();
+            for (CartItem cartItem : cartItems) {
+                String productId = cartItem.getProductId();
+                int id = cartItems.indexOf(cartItem) + 1;
+                int quantity = cartItem.getQuantity();
+                if (productId != null) {
+                    Optional<Product> product = productRepository.findById(productId);
+                    product.ifPresent(value -> productsInCart.add(new ProductInCart(id, value, quantity)));
                 }
+
             }
         }
         return productsInCart;
@@ -204,18 +196,6 @@ public class OrderService {
         return qty;
     }
 
-    public List<Product> searchProducts(String searchTerm) {
-       /* TextIndexDefinition textIndex = new TextIndexDefinition.TextIndexDefinitionBuilder()
-                .onField("name")
-                .onField("description")
-                .build();
-        mongoTemplate.indexOps(Product.class).ensureIndex(textIndex);*/
-
-        Pattern pattern = Pattern.compile(".*" + searchTerm + ".*");
-        Criteria regex = Criteria.where("name").regex(String.valueOf(pattern), "i");
-        return mongoOperations.find(new Query().addCriteria(regex).limit(5), Product.class);
-
-    }
 
     public void removeAProductFromOrder(String productId, String userId) {
         Order order = findOneByUserIdOrderByCreatedAtDesc(userId);

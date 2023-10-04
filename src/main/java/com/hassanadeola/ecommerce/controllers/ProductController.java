@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,12 +32,15 @@ public class ProductController {
         return productService.getProducts(page, limit);
 
     }
-/*
-    @GetMapping("/products/search")
-    public List<Product> searchProducts(String name, String description, int skip, int limit) {
-        return productRepository.findProductsByName(name, description, skip, limit);
 
-    }*/
+    @GetMapping("/products/search")
+    public List<Product> searchForProduct(String search) {
+        List<Product> products = new ArrayList<>();
+        if (search != null) {
+            products = productService.searchProducts(search);
+        }
+        return products;
+    }
 
 
 }

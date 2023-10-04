@@ -18,13 +18,11 @@ public class UserService {
 
 
     @Autowired
+    HttpServletResponse httpServletResponse;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    HttpServletResponse httpServletResponse;
-
 
     public Users saveUser(String username, String email, String password) {
         return userRepository.save(new Users(username, email, passwordEncoder.encode(password)));
@@ -104,9 +102,6 @@ public class UserService {
         Card card = null;
         if (user.isPresent()) {
             card = user.get().getCard();
-        }
-        if (card == null) {
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
         return card;
 
