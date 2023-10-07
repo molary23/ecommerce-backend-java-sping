@@ -34,10 +34,10 @@ public class ProductController {
     }
 
     @GetMapping("/products/search")
-    public List<Product> searchForProduct(String search) {
+    public List<Product> searchForProduct(String q) {
         List<Product> products = new ArrayList<>();
-        if (search != null) {
-            products = productService.searchProducts(search);
+        if (q != null) {
+            products = productService.searchProducts(q);
         }
         return products;
     }
